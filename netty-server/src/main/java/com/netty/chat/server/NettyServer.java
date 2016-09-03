@@ -3,12 +3,12 @@ package com.netty.chat.server;
 
 
 import com.chat.common.message.QchatMessage;
-import com.chat.common.message.QchatMessage.person;
 import com.chat.common.netty.handler.decode.ProtobufDecoder;
 import com.chat.common.netty.handler.decode.ProtobufVarint32FrameDecoder;
 import com.chat.common.netty.handler.encode.MsgEncode;
 import com.chat.common.netty.handler.encode.ProtobufEncoder;
 import com.chat.common.netty.handler.encode.ProtobufVarint32LengthFieldPrepender;
+import com.chat.common.scan.MsgScan;
 import com.netty.chat.server.handler.ServerProtoHandler;
 import com.netty.chat.server.handler.ServerHandler;
 
@@ -51,7 +51,7 @@ public class NettyServer {
 //				     proto尝试	            	 
 	            	 pipeline.addLast(
 	            			 			new ProtobufVarint32FrameDecoder(),
-	            			 			new ProtobufDecoder(QchatMessage.person.getDefaultInstance()),
+	            			 			new ProtobufDecoder(QchatMessage.person1.getDefaultInstance()),
 	            			 			
 	            			 			new ProtobufVarint32LengthFieldPrepender(),
 	            			 			new ProtobufEncoder(),
@@ -73,6 +73,8 @@ public class NettyServer {
 	}
 	
 	public static void main(String[] args) {
+		MsgScan msgScan = new MsgScan("com/chat/common/message");
+		msgScan.initMsg();
 		NettyServer server = new NettyServer();
 		server.openPort(6100);
 	}
