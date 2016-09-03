@@ -32,7 +32,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter{
 		// TODO Auto-generated method stub
 		
 		System.err.println((String)msg);
-		ctx.writeAndFlush("hi client,I'm server");
+		ctx.writeAndFlush("hi client,I'm server,I get Msg!");
 		
 		
 		

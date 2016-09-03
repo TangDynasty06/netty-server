@@ -2,7 +2,14 @@ package com.netty.chat.server;
 
 
 
-import com.chat.common.netty.handler.MsgEncode;
+import com.chat.common.message.QchatMessage;
+import com.chat.common.message.QchatMessage.person;
+import com.chat.common.netty.handler.decode.ProtobufDecoder;
+import com.chat.common.netty.handler.decode.ProtobufVarint32FrameDecoder;
+import com.chat.common.netty.handler.encode.MsgEncode;
+import com.chat.common.netty.handler.encode.ProtobufEncoder;
+import com.chat.common.netty.handler.encode.ProtobufVarint32LengthFieldPrepender;
+import com.netty.chat.server.handler.ServerProtoHandler;
 import com.netty.chat.server.handler.ServerHandler;
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -32,13 +39,24 @@ public class NettyServer {
 	             @Override
 	             public void initChannel(SocketChannel ch) throws Exception {
 	            	 ChannelPipeline pipeline = ch.pipeline();
-	            	 ByteBuf delimiter = Unpooled.copiedBuffer("@$_F_F".getBytes());
+//					 字符串解码格式的
+//	            	 ByteBuf delimiter = Unpooled.copiedBuffer("@$_F_F".getBytes());
+//	            	 pipeline.addLast(
+//	            			 			new DelimiterBasedFrameDecoder(1024, delimiter),
+//	            			 			new StringDecoder(),
+//	            			 			new MsgEncode(),
+//	            			 			new ServerHandler()
+//	            			 		);
+
+//				     proto尝试	            	 
 	            	 pipeline.addLast(
-	            			 			new DelimiterBasedFrameDecoder(1024, delimiter),
-	            			 			new StringDecoder(),
-	            			 			new MsgEncode(),
-	            			 			new ServerHandler()
-	            			 		);
+	            			 			new ProtobufVarint32FrameDecoder(),
+	            			 			new ProtobufDecoder(QchatMessage.person.getDefaultInstance()),
+	            			 			
+	            			 			new ProtobufVarint32LengthFieldPrepender(),
+	            			 			new ProtobufEncoder(),
+	            			 			new ServerProtoHandler()
+	            			 		 );
 	             }
 	         })
 			 .option(ChannelOption.SO_BACKLOG, 128)
