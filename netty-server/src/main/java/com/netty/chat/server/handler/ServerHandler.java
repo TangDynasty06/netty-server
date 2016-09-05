@@ -30,7 +30,14 @@ public class ServerHandler extends ChannelInboundHandlerAdapter{
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		// TODO Auto-generated method stub
-		ByteBuf request = (ByteBuf)msg;
+		
+		System.err.println((String)msg);
+		ctx.writeAndFlush("hi client,I'm server");
+		
+		
+		
+		
+		/*ByteBuf request = (ByteBuf)msg;
 		byte[] requestArr = new byte[request.readableBytes()];
 		request.readBytes(requestArr);
 		String requestStr = new String(requestArr);
@@ -43,7 +50,14 @@ public class ServerHandler extends ChannelInboundHandlerAdapter{
 		ByteBuf response = ctx.alloc().buffer(4 * responseStr.length());
 		response.writeBytes(responseStr.getBytes());
 		ctx.write(response);
-		ctx.flush();
+		ctx.flush();*/
+		
+		
+		
+		
+		
+		
+		
 		//System.err.println("channel msg read,channelId:" + ctx.channel().id());
 		
 		//super.channelRead(ctx, msg);

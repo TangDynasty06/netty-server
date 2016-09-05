@@ -1,16 +1,23 @@
 package com.netty.chat.server;
 
 
+
+import com.chat.common.netty.handler.MsgEncode;
 import com.netty.chat.server.handler.ServerHandler;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
 
 public class NettyServer {
 	
@@ -24,7 +31,14 @@ public class NettyServer {
 			 .childHandler(new ChannelInitializer<SocketChannel>() {
 	             @Override
 	             public void initChannel(SocketChannel ch) throws Exception {
-	                 ch.pipeline().addLast(new ServerHandler());
+	            	 ChannelPipeline pipeline = ch.pipeline();
+	            	 ByteBuf delimiter = Unpooled.copiedBuffer("@$_F_F".getBytes());
+	            	 pipeline.addLast(
+	            			 			new DelimiterBasedFrameDecoder(1024, delimiter),
+	            			 			new StringDecoder(),
+	            			 			new MsgEncode(),
+	            			 			new ServerHandler()
+	            			 		);
 	             }
 	         })
 			 .option(ChannelOption.SO_BACKLOG, 128)
