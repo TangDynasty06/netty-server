@@ -2,9 +2,14 @@ package com.netty.chat.server;
 
 
 
+import java.util.List;
+
 import com.chat.common.message.QchatMessage;
+import com.chat.common.netty.handler.decode.ByteToMessageDecode;
+import com.chat.common.netty.handler.decode.LengthFieldBasedFrameDecoder;
 import com.chat.common.netty.handler.decode.ProtobufDecoder;
 import com.chat.common.netty.handler.decode.ProtobufVarint32FrameDecoder;
+import com.chat.common.netty.handler.encode.MessageToByteEncode;
 import com.chat.common.netty.handler.encode.MsgEncode;
 import com.chat.common.netty.handler.encode.ProtobufEncoder;
 import com.chat.common.netty.handler.encode.ProtobufVarint32LengthFieldPrepender;
@@ -16,6 +21,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
@@ -24,6 +30,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 
 public class NettyServer {
@@ -47,16 +55,29 @@ public class NettyServer {
 //	            			 			new MsgEncode(),
 //	            			 			new ServerHandler()
 //	            			 		);
+	            	 
+	            	 
+	            	 
 
 //				     proto尝试	            	 
+//	            	 pipeline.addLast(
+//	            			 			new ProtobufVarint32FrameDecoder(),
+//	            			 			new ProtobufDecoder(QchatMessage.person1.getDefaultInstance()),
+//	            			 			new ProtobufVarint32LengthFieldPrepender(),
+//	            			 			new ProtobufEncoder(),
+//	            			 			new ServerProtoHandler()
+//	            			 		 );
+	            	 
+	            	 //自定义尝试
 	            	 pipeline.addLast(
-	            			 			new ProtobufVarint32FrameDecoder(),
-	            			 			new ProtobufDecoder(QchatMessage.person1.getDefaultInstance()),
-	            			 			
-	            			 			new ProtobufVarint32LengthFieldPrepender(),
-	            			 			new ProtobufEncoder(),
-	            			 			new ServerProtoHandler()
-	            			 		 );
+     			 			new ByteToMessageDecode(),
+     			 			new MessageToByteEncode(),
+     			 			new ServerProtoHandler()
+     			 		 );
+	            	 
+	            	 
+	            	 
+	            	 
 	             }
 	         })
 			 .option(ChannelOption.SO_BACKLOG, 128)
