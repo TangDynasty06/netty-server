@@ -14,13 +14,18 @@ public class ServerProtoHandler extends ChannelInboundHandlerAdapter{
 			throws Exception {
 		// TODO Auto-generated method stub
 		if(msg instanceof MessageLite){
-			QchatMessage.person1 p = (QchatMessage.person1)msg;
-			System.err.println(p.getId() + " , " + p.getName());
+//			QchatMessage.person1 p = (QchatMessage.person1)msg;
+//			System.err.println(p.getId() + " , " + p.getName());
+//			
+//			person1.Builder builder = person1.newBuilder();
+//			builder.setId(102);
+//			builder.setName("sever");
+//			ctx.writeAndFlush(builder.build());
 			
-			person1.Builder builder = person1.newBuilder();
-			builder.setId(102);
-			builder.setName("sever");
-			ctx.writeAndFlush(builder.build());
+			MessageLite re = (MessageLite)msg;
+			System.err.println(re + ",server println");
+			ctx.writeAndFlush(re);
+			
 		}
 	}
 	
